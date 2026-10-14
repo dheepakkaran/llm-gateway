@@ -2,7 +2,7 @@
 
 A serverless LLM gateway on AWS that catches runaway AI agents: loops, retry storms, token spikes and token bombs. It suspends the agent within seconds, alerts its owner on Telegram, and gives you kill switches. It runs entirely on the AWS always-free tier.
 
-**Live dashboard:** https://dheepakkaran.github.io/llm-gateway/
+**Live dashboard:** https://dheepakkaran.github.io/llm-gateway/ · **Learning guide:** [docs/LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md) (every design decision explained from zero, plus interview Q&A)
 
 ![Demo movie: five buggy bots get caught live on the deployed gateway](docs/demo.gif)
 
