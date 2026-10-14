@@ -1,0 +1,200 @@
+{"id": 0, "category": "open_qa", "instruction": "How do you maintain good dental hygiene"}
+{"id": 1, "category": "classification", "instruction": "Classify each of the following as a ridesharing or food delivery company: Doordash, Lyft, Wolt, Deliveroo, Bolt, Didi, Rappi"}
+{"id": 2, "category": "open_qa", "instruction": "What are good finishes for a desk top made of hard wood?"}
+{"id": 3, "category": "classification", "instruction": "Tell me whether these are Indian states or not: Karnataka, Kerala, Maharashtra, Chennai, Haryana, Delhi"}
+{"id": 4, "category": "classification", "instruction": "Please classify the following items as either “waterproof” or “water absorbent”: umbrella, paper towel, sponge, raincoat, dish rag, car windshield."}
+{"id": 5, "category": "classification", "instruction": "I bought two bottles of 2L coca-cola when they were on special, but when I checked my receipt, I was charged the full price! Please contact me on 0410787999 or iratecustomer@hotmail.com to discuss a refund!"}
+{"id": 6, "category": "open_qa", "instruction": "How did the introduction of broadband in India in the early 2000s impact Indian movie culture?"}
+{"id": 7, "category": "open_qa", "instruction": "Who was the first astronaut?"}
+{"id": 8, "category": "brainstorming", "instruction": "Give me examples of German auto manufacturers still operating."}
+{"id": 9, "category": "creative_writing", "instruction": "Write a few paragraphs to describe the benefits of living in Arizona versus California"}
+{"id": 10, "category": "open_qa", "instruction": "What is the largest city in Ecuador by population?"}
+{"id": 11, "category": "classification", "instruction": "Classify each of the following as food, company or both: apple, unilever, avon, mercedez, nestle, meat, rice, penny, pineapple, beans, dm, banana"}
+{"id": 12, "category": "classification", "instruction": "Classify each of the following as either a virtue or a vice: humility, kindness, patience, greed, anger, lust, envy, pride."}
+{"id": 13, "category": "brainstorming", "instruction": "Help me come up with 3 ideas for a new business and how I can start it"}
+{"id": 14, "category": "brainstorming", "instruction": "Name the top 10 Manchester United Scorers of all time and how many goals they scored?"}
+{"id": 15, "category": "general_qa", "instruction": "Should a human be happy all the time?"}
+{"id": 16, "category": "classification", "instruction": "Which of the following are in the X-men: Wolverine, Cyclops, Gandalf, He-man and Gambit"}
+{"id": 17, "category": "creative_writing", "instruction": "Write the first paragraph of a post from an alum describing the appeal of attending UC Berkeley for an undergraduate degree."}
+{"id": 18, "category": "classification", "instruction": "Classify each of the following as either a Carnivore or a Herbivore: Cow, Shark, Zebra, Lion, Wolf, Elephant, Tiger, Deer, Leopard, Cheetah"}
+{"id": 19, "category": "open_qa", "instruction": "Why do human beings react slow on climate changes?"}
+{"id": 20, "category": "open_qa", "instruction": "List five titles by Ann M. Martin."}
+{"id": 21, "category": "open_qa", "instruction": "Who was the costliest player in Indian Premier League (IPL) auction of 2020?"}
+{"id": 22, "category": "open_qa", "instruction": "What is the fastest or speediest animal?"}
+{"id": 23, "category": "classification", "instruction": "Of the following measurements, which units relate to mass? Kilogram, microgram, pound, litre, year, kilometre and ounce."}
+{"id": 24, "category": "open_qa", "instruction": "What states do not have a state gambling lottery?"}
+{"id": 25, "category": "creative_writing", "instruction": "Write a children's story about a baby called Arthur who weighed three times the normal weight for a boy his age"}
+{"id": 26, "category": "creative_writing", "instruction": "What are some benefits of public transportation?"}
+{"id": 27, "category": "classification", "instruction": "Arrange these weapons from oldest to newest, based on the date they were first invented. Sword Nuclear Bomb Hand Axe Gatling Gun Rifle"}
+{"id": 28, "category": "classification", "instruction": "Identify which instrument is string or percussion: Den-den daiko, Luc huyen cam"}
+{"id": 29, "category": "open_qa", "instruction": "What is the largest or biggest land animal?"}
+{"id": 30, "category": "general_qa", "instruction": "What does the theme songs of Jaws, Star Wars, and Harry Potter have in common?"}
+{"id": 31, "category": "general_qa", "instruction": "What are some advantages of making a painting with acrylic instead of oil paint?"}
+{"id": 32, "category": "classification", "instruction": "Identify which car manufacturer is Italian or American: Lamborghini, Chrysler"}
+{"id": 33, "category": "open_qa", "instruction": "Name some of the bravolebrities from The Real Housewives of Miami"}
+{"id": 34, "category": "open_qa", "instruction": "What does BMW stand for?"}
+{"id": 35, "category": "open_qa", "instruction": "How did Robert Baratheon die?"}
+{"id": 36, "category": "creative_writing", "instruction": "Given this series of navigation instructions, determine whether one would end up back at the starting point: Take 1 step. Take 2 steps. Take 3 steps. Turn around. Take 6 steps. Turn right."}
+{"id": 37, "category": "brainstorming", "instruction": "What is better a mac or a PC?"}
+{"id": 38, "category": "brainstorming", "instruction": "How can I choose a favorite professional basketball team?"}
+{"id": 39, "category": "general_qa", "instruction": "What is Unified Payments Interface (UPI) in India"}
+{"id": 40, "category": "general_qa", "instruction": "What happens if the sky falls down?"}
+{"id": 41, "category": "classification", "instruction": "classify each of the following as either a city or a county: usa, mexico, cananda, syracuse, austin, mumbai, japan, tokyo"}
+{"id": 42, "category": "open_qa", "instruction": "Whale skin is how many cm deep?"}
+{"id": 43, "category": "classification", "instruction": "Classify the following information as 'PII' or 'not PII' : Social Security Number, Home Address, Age, Number of Employees, City Population, Gender, Business Phone"}
+{"id": 44, "category": "creative_writing", "instruction": "What's a relaxing activity to do when visiting Seoul, South Korea?"}
+{"id": 45, "category": "open_qa", "instruction": "Who is the first African-American to perform at the Metropolitan Opera?"}
+{"id": 46, "category": "general_qa", "instruction": "How many legs has octopus?"}
+{"id": 47, "category": "general_qa", "instruction": "What is an open platform?"}
+{"id": 48, "category": "brainstorming", "instruction": "Give me a list of the best TV shows that I must watch."}
+{"id": 49, "category": "brainstorming", "instruction": "Why Bollywood is so famous"}
+{"id": 50, "category": "open_qa", "instruction": "What are some signs and symptoms of Type 2 Diabetes?"}
+{"id": 51, "category": "open_qa", "instruction": "why is hydration so important?"}
+{"id": 52, "category": "open_qa", "instruction": "What is a Tide?"}
+{"id": 53, "category": "open_qa", "instruction": "Why is it good to fly direct?"}
+{"id": 54, "category": "open_qa", "instruction": "Is it safe to invest in cryptocurrency?"}
+{"id": 55, "category": "brainstorming", "instruction": "Give me a bulleted list of who received the last best player awards at the World Cup."}
+{"id": 56, "category": "classification", "instruction": "Classify the series according to the OTT platform they are on. The Witcher, Jack Ryan, The Rings of Power, Sweet Tooth"}
+{"id": 57, "category": "open_qa", "instruction": "Pultizer Prize 2022 is given which field"}
+{"id": 58, "category": "brainstorming", "instruction": "What are some of the differences between English and Mandarin Chinese languages?"}
+{"id": 59, "category": "brainstorming", "instruction": "Give me a list of the best movies I've never seen."}
+{"id": 60, "category": "general_qa", "instruction": "Should generative AI be banned from the classroom ?"}
+{"id": 61, "category": "general_qa", "instruction": "How can you prepare for a longer airplane flight with children?"}
+{"id": 62, "category": "general_qa", "instruction": "What is bond duration?"}
+{"id": 63, "category": "brainstorming", "instruction": "What are some approaches to prevent abuse of LLMs?"}
+{"id": 64, "category": "open_qa", "instruction": "What was Skippy ( on TV )"}
+{"id": 65, "category": "open_qa", "instruction": "What is a dog better at than humans?"}
+{"id": 66, "category": "classification", "instruction": "Identify which instrument is string or percussion: Kenong, Zeze"}
+{"id": 67, "category": "open_qa", "instruction": "What is a prime number?"}
+{"id": 68, "category": "open_qa", "instruction": "What is National Financial Switch or NFS?"}
+{"id": 69, "category": "open_qa", "instruction": "Name every month that has 30 days"}
+{"id": 70, "category": "brainstorming", "instruction": "What are 10 movies my young child can watch?"}
+{"id": 71, "category": "brainstorming", "instruction": "Give me a list of 7 of the most popular Pokémon"}
+{"id": 72, "category": "creative_writing", "instruction": "road trip to Kerala from Bangalore."}
+{"id": 73, "category": "classification", "instruction": "Identify which instrument is string or woodwind: Chrotta, Frula"}
+{"id": 74, "category": "classification", "instruction": "Who is the antagonist on The X-Files?"}
+{"id": 75, "category": "classification", "instruction": "Tell me whether these are European countries or Asian countries: Spain, France, Norway, the Czech Republic, Denmark, Portugal, Brazil, South Africa, Canada, China, Japan, Malaysia, Singapore, Sri Lanka, The Philippines"}
+{"id": 76, "category": "classification", "instruction": "Identify which instrument is string or percussion: Madal, Craviola"}
+{"id": 77, "category": "open_qa", "instruction": "What's the largest bird in the world?"}
+{"id": 78, "category": "general_qa", "instruction": "What is baseball?"}
+{"id": 79, "category": "brainstorming", "instruction": "What are a lot of different options for traveling across New York City?"}
+{"id": 80, "category": "general_qa", "instruction": "Why are the New England Patriots the greatest NFL team ever?"}
+{"id": 81, "category": "open_qa", "instruction": "Name three movies with Denzel Washington."}
+{"id": 82, "category": "brainstorming", "instruction": "What are three most commonly sung lyric soprano arias?"}
+{"id": 83, "category": "creative_writing", "instruction": "Do dogs reciprocate based on how you treat them?"}
+{"id": 84, "category": "open_qa", "instruction": "Queen Elizabeth II was crowned at Westminster Abbey on which date?"}
+{"id": 85, "category": "classification", "instruction": "Classify each of the following as inclined or flat: stairs, beach, mountain, lake, escalator, pond, ramp"}
+{"id": 86, "category": "brainstorming", "instruction": "What are the reasons why quantum theory is considered do difficult to understand"}
+{"id": 87, "category": "creative_writing", "instruction": "What is the best part of staying in a vacation rental on the lake?"}
+{"id": 88, "category": "brainstorming", "instruction": "What are 5 potential uses for an empty La Croix can?"}
+{"id": 89, "category": "brainstorming", "instruction": "Give me a bulleted list of movie ideas."}
+{"id": 90, "category": "brainstorming", "instruction": "Name five surf spots on the North Shore of Oahu in Hawaii"}
+{"id": 91, "category": "general_qa", "instruction": "Why do people travel to islands for a holiday?"}
+{"id": 92, "category": "classification", "instruction": "What are the primary colors?"}
+{"id": 93, "category": "open_qa", "instruction": "Name some famous 1990 music"}
+{"id": 94, "category": "classification", "instruction": "Which is a species of fish? Wahoo or Yahoo"}
+{"id": 95, "category": "open_qa", "instruction": "What is the PEDALS method"}
+{"id": 96, "category": "open_qa", "instruction": "What year was the car manufacturer Ferrari founded in?"}
+{"id": 97, "category": "classification", "instruction": "I'm always confused while segregating the trash. Could you help me identify what should go where? I have to throw these items: Soda Can, Paper Napkin, and Coffee Cup."}
+{"id": 98, "category": "brainstorming", "instruction": "What Are the Gift Ideas for Anime Fans?"}
+{"id": 99, "category": "open_qa", "instruction": "I do not trust you"}
+{"id": 100, "category": "classification", "instruction": "Tell me whether these are electric or gas powered vehicles"}
+{"id": 101, "category": "general_qa", "instruction": "Why do humans like cats?"}
+{"id": 102, "category": "open_qa", "instruction": "Who is the most successful driver in Formula 1 history?"}
+{"id": 103, "category": "brainstorming", "instruction": "Top 5 movies that I would love to watch over and over again"}
+{"id": 104, "category": "general_qa", "instruction": "Why some people like spicy food?"}
+{"id": 105, "category": "open_qa", "instruction": "What is the name of the national museum of the Netherlands?"}
+{"id": 106, "category": "general_qa", "instruction": "Why should one travel the world?"}
+{"id": 107, "category": "general_qa", "instruction": "What is the best day for cold calling?"}
+{"id": 108, "category": "open_qa", "instruction": "What is a balloon?"}
+{"id": 109, "category": "open_qa", "instruction": "Name three different cuts of steak from a cow."}
+{"id": 110, "category": "brainstorming", "instruction": "How would you train for a marathon?"}
+{"id": 111, "category": "classification", "instruction": "Which of the following numbers are prime? 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 2^11-1, 14, 17, 29, 47"}
+{"id": 112, "category": "classification", "instruction": "Which is a disease? Asthma, Depression, Cancer, AIDS, Schizophrenia, Tuberculosis, PTSD"}
+{"id": 113, "category": "brainstorming", "instruction": "Give me the list of Greek goddesses starting by 'B':"}
+{"id": 114, "category": "classification", "instruction": "Classify these cities into the countries that they are in. Paris, Munich, Frankfurt, Nice, Lyon, Dresden"}
+{"id": 115, "category": "general_qa", "instruction": "How do you describe your favorite cup of coffee?"}
+{"id": 116, "category": "classification", "instruction": "Identify which car manufacturer is British or American: Buick, Bentley"}
+{"id": 117, "category": "classification", "instruction": "Identify which instrument is string or percussion: Djembe, Dotar"}
+{"id": 118, "category": "open_qa", "instruction": "What is the largest city in the South Hemisphere?"}
+{"id": 119, "category": "creative_writing", "instruction": "Write a short poem about spring"}
+{"id": 120, "category": "brainstorming", "instruction": "Give a list of the parts of your physical appearance you would want to change?"}
+{"id": 121, "category": "open_qa", "instruction": "What is heliocentrism?"}
+{"id": 122, "category": "general_qa", "instruction": "What is cross-country skiing?"}
+{"id": 123, "category": "creative_writing", "instruction": "Write a short letter to a dear friend who just lost their Mother, only six months after losing their father. Both of their parents were someone you and your family were also very close with."}
+{"id": 124, "category": "general_qa", "instruction": "When is the best time of year to visit Seattle?"}
+{"id": 125, "category": "open_qa", "instruction": "Who invented Boltzmann Machines?"}
+{"id": 126, "category": "classification", "instruction": "Tell me whether these sea animals are fish or mammals: blue whale, beluga whale, manatee, dolphin, orca, humpback whale, whale shark, sea lion, walrus, seal, white tip shark, red tail shark, great white shark, guppy, danio, swordtail, tetra, cichlid, tuna, salmon, trout, puffer fish"}
+{"id": 127, "category": "open_qa", "instruction": "Why Spark is faster than MapReduce?"}
+{"id": 128, "category": "general_qa", "instruction": "Can anyone play rugby?"}
+{"id": 129, "category": "open_qa", "instruction": "How do you wheelie a motorcycle?"}
+{"id": 130, "category": "open_qa", "instruction": "Who is the greatest artist of all time?"}
+{"id": 131, "category": "open_qa", "instruction": "What animals can I see on safari?"}
+{"id": 132, "category": "open_qa", "instruction": "What does the term March Madness refer to in college basketball?"}
+{"id": 133, "category": "open_qa", "instruction": "How do you make a Gin Martini?"}
+{"id": 134, "category": "open_qa", "instruction": "What are some sports that are played with a round ball?"}
+{"id": 135, "category": "open_qa", "instruction": "What is the tallest structure in the Western Hemisphere?"}
+{"id": 136, "category": "classification", "instruction": "Identify which instrument is string or percussion: Caxirola, Ducheke"}
+{"id": 137, "category": "brainstorming", "instruction": "What was most important invention by Humans?"}
+{"id": 138, "category": "open_qa", "instruction": "Are Grizzly bears and Brown bears the same?"}
+{"id": 139, "category": "creative_writing", "instruction": "Using Rene Girard's mimetic theory, which states that mutual desire for a coveted position or object among a group of individuals creates social rivalry and eventual scapegoating, write a short summary about a football team's season."}
+{"id": 140, "category": "open_qa", "instruction": "Which is the best place to Kayak in Austin?"}
+{"id": 141, "category": "open_qa", "instruction": "In France if you were served le miel what would you eat"}
+{"id": 142, "category": "classification", "instruction": "Which of the following countries are monarchies? United Kingdom, the Netherlands, Germany, Luxembourg, United States, Russia, Poland, Denmark, Norway, Sweden, Finland, Spain"}
+{"id": 143, "category": "general_qa", "instruction": "How do I start running?"}
+{"id": 144, "category": "brainstorming", "instruction": "What are the 5 largest ski and snowboard resorts in North America?"}
+{"id": 145, "category": "open_qa", "instruction": "name some famous rock songs in the 1970s"}
+{"id": 146, "category": "open_qa", "instruction": "List five titles by Anne Rice."}
+{"id": 147, "category": "general_qa", "instruction": "What is a typical Humpback Whale migration pattern"}
+{"id": 148, "category": "classification", "instruction": "Identify which instrument is string or percussion: Hyoshigi, Ronroco"}
+{"id": 149, "category": "classification", "instruction": "Who is the prime minister of Japan?"}
+{"id": 150, "category": "open_qa", "instruction": "Who is Daniel Ricciardo?"}
+{"id": 151, "category": "brainstorming", "instruction": "3 Best TV series in the World"}
+{"id": 152, "category": "creative_writing", "instruction": "Write a witty paragraph about a chicken's thought process for crossing the road."}
+{"id": 153, "category": "open_qa", "instruction": "What are three different club teams Cristiano Ronaldo has played for?"}
+{"id": 154, "category": "open_qa", "instruction": "Which classical composer was deaf?"}
+{"id": 155, "category": "classification", "instruction": "Choose the word which is different from the rest: Mother, Friend, Sister, Father, Brother"}
+{"id": 156, "category": "general_qa", "instruction": "How do you make a peanut butter and jelly sandwich?"}
+{"id": 157, "category": "open_qa", "instruction": "What is a capital gain in finance?"}
+{"id": 158, "category": "open_qa", "instruction": "What are the disadvantages of Linux?"}
+{"id": 159, "category": "classification", "instruction": "Tell me if these technologies would have existed before the invention of electricity or not: steam engine, candles, iPad, radio, oil lamps, fax machine, printing press"}
+{"id": 160, "category": "open_qa", "instruction": "Does Lego release any sets with tanks?"}
+{"id": 161, "category": "classification", "instruction": "Tell me what is a good manager and a bad manager: Sympathy, open, democratic, Micro management, always show trust, always show doubt, intimidating"}
+{"id": 162, "category": "general_qa", "instruction": "Why do people use computer mice?"}
+{"id": 163, "category": "brainstorming", "instruction": "Give me a list of the best Romantic Comedy Movies"}
+{"id": 164, "category": "open_qa", "instruction": "Give me a quick exercise I can do every day"}
+{"id": 165, "category": "classification", "instruction": "Which characters belong to DC or Marvel Universe? Falcon, Hawkman"}
+{"id": 166, "category": "brainstorming", "instruction": "Give me a bulleted list of the winners of the The Masters Tournament for the last decade."}
+{"id": 167, "category": "brainstorming", "instruction": "Who is best Alexa or Siri"}
+{"id": 168, "category": "open_qa", "instruction": "How many movies did director Quentin Tarantino make?"}
+{"id": 169, "category": "open_qa", "instruction": "How many syllables are in the word reverberate?"}
+{"id": 170, "category": "open_qa", "instruction": "Where is Babylon remain located?"}
+{"id": 171, "category": "open_qa", "instruction": "Who won the best new artist as well as award for the Best Pop Vocal Album in 64th Annual Grammy Awards"}
+{"id": 172, "category": "classification", "instruction": "Identify which instrument is string or percussion: Pambai, Steel Guitar"}
+{"id": 173, "category": "general_qa", "instruction": "What Does the Referee Do?"}
+{"id": 174, "category": "open_qa", "instruction": "Who directed the most episodes of season five of Game of Thrones?"}
+{"id": 175, "category": "brainstorming", "instruction": "how to fight a speeding ticket?"}
+{"id": 176, "category": "open_qa", "instruction": "What is the law of sines?"}
+{"id": 177, "category": "open_qa", "instruction": "Name some TV shows that American actor David Duchovny has been in."}
+{"id": 178, "category": "open_qa", "instruction": "Who is the prime minister of India"}
+{"id": 179, "category": "open_qa", "instruction": "List some of the great houses that appear in the series \"A Song of Ice and Fire.\""}
+{"id": 180, "category": "general_qa", "instruction": "What are the most common types of pizzas?"}
+{"id": 181, "category": "open_qa", "instruction": "What is the best book to read about the Battle of Stalingrad?"}
+{"id": 182, "category": "general_qa", "instruction": "What is a to-do list?"}
+{"id": 183, "category": "general_qa", "instruction": "What kind of boat should I purchase?"}
+{"id": 184, "category": "classification", "instruction": "Which ones are metals and non metals: Copper, Hydrogen, Silver, Carbon, Gold, Nitrogen"}
+{"id": 185, "category": "general_qa", "instruction": "What type of mouse do you use with a mac"}
+{"id": 186, "category": "open_qa", "instruction": "How many NBA championships does Lebron James have?"}
+{"id": 187, "category": "classification", "instruction": "Tell me whether these are movies about AI or other topics: , \"Ex Machina\", \"Her\", \"Transcendence\", \"I, Robot\", \"Ghost in the Shell\", \"The Godfather\", \"Pulp Fiction\", \"The Shawshank Redemption\", \"The Dark Knight\", \"12 Angry Men\""}
+{"id": 188, "category": "creative_writing", "instruction": "Please write an email to the parent who complained about your child hitting their child."}
+{"id": 189, "category": "brainstorming", "instruction": "Give me 4 words to describe designer shoes"}
+{"id": 190, "category": "open_qa", "instruction": "What does a vegan lifestyle mean to you?"}
+{"id": 191, "category": "classification", "instruction": "Classify each as fragile or not fragile: Glass, egg shells, pottery, cardboard box, styrofoam, rubber"}
+{"id": 192, "category": "creative_writing", "instruction": "Write a beautiful bedtime 5 paragraph story for a 4 years old. The outline of the story is: a small boy, named Jonny goes on an adventure with his family."}
+{"id": 193, "category": "open_qa", "instruction": "Why are Dr. Seuss books so good?"}
+{"id": 194, "category": "creative_writing", "instruction": "Running a business is tough and there will always be problems in the market. Make the case to a skeptical colleague as to why private sector managers should devote attention and energy to being a steward of the institutions of capitalism. Please include citations for Jonathan Haidt."}
+{"id": 195, "category": "creative_writing", "instruction": "Write a brief paragraph about the evolution of Egyptian pyramids."}
+{"id": 196, "category": "open_qa", "instruction": "Of NFL teams who have gone to the Super Bowl, how many have a win percentage of Super Bowls of at least 50%?"}
+{"id": 197, "category": "classification", "instruction": "As an expert skier, what are the top resorts in the US to go skiing?"}
+{"id": 198, "category": "brainstorming", "instruction": "Give me a list of 5 first date ideas"}
+{"id": 199, "category": "creative_writing", "instruction": "Does platonic love hurt?"}
