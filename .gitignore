@@ -1,0 +1,12 @@
+.terraform/
+*.tfstate*
+*.tfvars
+.env
+reports/raw/
+data/
+infra/build/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.terraform.lock.hcl.bak
