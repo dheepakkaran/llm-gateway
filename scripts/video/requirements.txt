@@ -1,0 +1,5 @@
+playwright
+pillow
+numpy
+imageio-ffmpeg
+kokoro-onnx
