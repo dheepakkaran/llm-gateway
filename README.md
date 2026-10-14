@@ -6,7 +6,7 @@ A serverless LLM gateway on AWS that catches runaway AI agents: loops, retry sto
 
 ![Demo movie: five buggy bots get caught live on the deployed gateway](docs/demo.gif)
 
-_Recorded live from the public dashboard (2x capture, 1200 px): 4/4 problems caught, 0 false blocks, average catch time 2.41 s, 41 requests._
+_Recorded live from the public dashboard: the visitor clicks Run Live Demo and five buggy bots get caught one by one. 4/4 problems caught, 0 false blocks, average catch time 2.46 s, 41 requests._
 
 ## The problem
 
