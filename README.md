@@ -117,7 +117,7 @@ The only uncapped input is someone hammering the public URL directly. Each such 
 
 ## Monitoring
 
-A CloudWatch dashboard (`llmgw`, created by Terraform) puts the whole project on one page: Lambda invocations, errors, throttles and gateway p50/p95 latency; calls blocked by guard rules and agent state changes (2 log metric filters); DynamoDB read/write units per second against the 24 provisioned units, plus throttles; and estimated AWS charges. It uses 1 of the 3 always-free dashboards, about 28 metrics, 2 custom metrics, and no Logs Insights widgets (those bill per GB scanned). The estimated-charges tile needs "Receive CloudWatch billing alerts" turned on once in Billing preferences.
+A CloudWatch dashboard (`llmgw`, created by Terraform) puts the whole project on one page. Cost comes first: the estimated bill and charges per service, then 30-day meters for each always-free limit (Lambda requests vs 1M, Lambda GB-s vs 400k, logs vs 5 GB, KMS requests vs 20k). Below that: Lambda invocations, errors, throttles and gateway p50/p95 latency; calls blocked by guard rules and agent state changes (2 log metric filters); DynamoDB read/write units per second against the 24 provisioned units, plus throttles; and estimated AWS charges. It uses 1 of the 3 always-free dashboards, about 45 metrics, 2 custom metrics, and no Logs Insights widgets (those bill per GB scanned). The estimated-charges tile needs "Receive CloudWatch billing alerts" turned on once in Billing preferences.
 
 ## Measured results
 
