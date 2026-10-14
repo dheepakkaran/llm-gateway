@@ -1,0 +1,62 @@
+{
+  "measured_at": "2026-10-14 19:01 UTC",
+  "total_requests": 178,
+  "scenarios": [
+    {
+      "scenario": "normal",
+      "sent": 20,
+      "calls_to_catch": null,
+      "seconds_to_catch": null,
+      "reached_provider": 20,
+      "note": "0 false blocks"
+    },
+    {
+      "scenario": "loop",
+      "sent": 8,
+      "calls_to_catch": 6,
+      "seconds_to_catch": 2.16,
+      "reached_provider": 5,
+      "note": "caught 3/3 runs"
+    },
+    {
+      "scenario": "too_fast",
+      "sent": 14,
+      "calls_to_catch": 13,
+      "seconds_to_catch": 4.53,
+      "reached_provider": 10,
+      "note": "caught 3/3 runs"
+    },
+    {
+      "scenario": "token_bomb",
+      "sent": 3,
+      "calls_to_catch": 1,
+      "seconds_to_catch": 0.28,
+      "reached_provider": 0,
+      "note": "caught 3/3 runs"
+    },
+    {
+      "scenario": "retry_storm",
+      "sent": 11,
+      "calls_to_catch": 10,
+      "seconds_to_catch": 3.48,
+      "reached_provider": 10,
+      "note": "caught 3/3 runs"
+    },
+    {
+      "scenario": "fallback",
+      "sent": 30,
+      "calls_to_catch": null,
+      "seconds_to_catch": null,
+      "reached_provider": 30,
+      "note": "100% success, 15 via backup"
+    },
+    {
+      "scenario": "real_provider",
+      "sent": 20,
+      "calls_to_catch": null,
+      "seconds_to_catch": null,
+      "reached_provider": 20,
+      "note": "p50 373 ms, p95 971 ms"
+    }
+  ]
+}

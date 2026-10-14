@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>llm-gateway Control Room</title>
+<meta name="description" content="Live dashboard of a serverless LLM gateway that catches runaway AI agents.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a control room. Demo stage on top, the breaker panel (one breaker per
+   agent) under it, then the request log and incident log side by side. */
+:root {
+  --bg: #eef1f4; --panel: #ffffff; --ink: #13202b; --muted: #586674; --line: #d3dae1;
+  --accent: #0b6e99; --accent-ink: #ffffff; --tint: #e3edf3;
+  --ok: #1d8a4c; --warn: #c9660a; --crit: #c2302d; --ok-bg: #e2f3e9; --warn-bg: #fbeedd; --crit-bg: #f9e3e2;
+  --f-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e141a; --panel: #151d25; --ink: #e4ebf1; --muted: #93a1ad; --line: #26323d;
+    --accent: #52b4e2; --accent-ink: #06202e; --tint: #17303f;
+    --ok: #43c07a; --warn: #f0973d; --crit: #f06560; --ok-bg: #14301f; --warn-bg: #3a2711; --crit-bg: #3a1716;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e141a; --panel: #151d25; --ink: #e4ebf1; --muted: #93a1ad; --line: #26323d;
+  --accent: #52b4e2; --accent-ink: #06202e; --tint: #17303f;
+  --ok: #43c07a; --warn: #f0973d; --crit: #f06560; --ok-bg: #14301f; --warn-bg: #3a2711; --crit-bg: #3a1716;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body);
+  padding: env(safe-area-inset-top, 0px) 16px env(safe-area-inset-bottom, 0px);
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 20px 56px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; font-stretch: 112%; font-weight: 700; }
+.label { font: 600 0.72rem/1 var(--f-body); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.mono, .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.muted { color: var(--muted); }
+
+/* top bar */
+.top { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand h1 { font-size: 1.35rem; font-stretch: 125%; font-weight: 800; }
+.top-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--panel); font-size: 0.8rem; color: var(--muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.dot.ok { background: var(--ok); } .dot.crit { background: var(--crit); } .dot.warn { background: var(--warn); }
+.iconbtn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 0.8rem; }
+
+/* hero / demo */
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.thesis h2 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-stretch: 118%; font-weight: 800; line-height: 1.08; }
+.thesis p { max-width: 58ch; margin: 14px 0 0; color: var(--muted); font-size: 1.02rem; }
+.run-row { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; margin-top: 22px; }
+.run { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 999px; padding: 14px 26px;
+  font: 700 1.05rem var(--f-display); font-stretch: 112%; letter-spacing: 0.01em; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
+.run:hover { filter: brightness(1.07); }
+.run[disabled] { opacity: .55; cursor: default; }
+.lockmsg { font-size: 0.88rem; color: var(--muted); max-width: 46ch; }
+.skip { font-size: 0.88rem; }
+
+.stage { padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.step { border: 1px solid var(--line); border-radius: 8px; padding: 7px 6px; text-align: center; font-size: 0.74rem;
+  color: var(--muted); background: var(--bg); line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
+.step b { display: block; font: 600 0.68rem var(--f-mono); }
+.step.current { border-color: var(--accent); color: var(--ink); background: var(--tint); }
+.step.caught { border-color: var(--ok); color: var(--ok); }
+.step.missed { border-color: var(--crit); color: var(--crit); }
+.step.clean { border-color: var(--ok); color: var(--ok); }
+.stage-body { display: grid; gap: 12px; }
+.row { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.row .label { padding-top: 3px; }
+.row p { margin: 0; }
+.ticker { font: 0.78rem/1.6 var(--f-mono); background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 10px; min-height: 7.3em; max-height: 9.8em; overflow: auto; }
+.ticker div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.res-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.res-grid div { border-left: 2px solid var(--line); padding-left: 8px; min-width: 0; }
+.res-grid .num { font-size: 1.15rem; font-weight: 500; display: block; overflow-wrap: anywhere; }
+.res-grid .num.word { font-size: 0.85rem; padding-top: 4px; }
+.res-grid .k { font-size: 0.72rem; color: var(--muted); }
+.summary { border: 1px solid var(--ok); background: var(--ok-bg); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; }
+.summary h3 { font-size: 1rem; font-stretch: 112%; }
+.empty { color: var(--muted); font-size: 0.92rem; }
+
+/* scenarios */
+.scen { display: grid; gap: 10px; }
+.scen-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.sbtn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 8px 14px; font-size: 0.88rem; }
+.sbtn:hover { border-color: var(--accent); }
+.sbtn[disabled] { opacity: .5; cursor: default; }
+
+/* counters */
+.counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+.counter { padding: 14px 18px; border-right: 1px solid var(--line); min-width: 0; }
+.counter:last-child { border-right: 0; }
+.counter .num { font-size: clamp(1.4rem, 2.6vw, 2rem); display: block; line-height: 1.15; margin-top: 6px; }
+.counter small { color: var(--muted); font-size: 0.75rem; }
+
+/* breaker panel */
+.section-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.breakers { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.breaker { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 14px; align-items: start; }
+.switch { width: 34px; height: 58px; border-radius: 7px; background: var(--bg); border: 1px solid var(--line); position: relative; }
+.lever { position: absolute; left: 5px; right: 5px; height: 22px; border-radius: 4px; top: 5px; background: var(--ok);
+  transition: top .5s cubic-bezier(.3,1.4,.5,1), background .3s; }
+.breaker[data-s="SUSPENDED"] .lever { top: 17px; background: var(--warn); }
+.breaker[data-s="KILLED"] .lever { top: 30px; background: var(--crit); }
+.b-name { font: 700 1rem var(--f-display); font-stretch: 105%; overflow-wrap: anywhere; }
+.b-owner { font-size: 0.8rem; color: var(--muted); }
+.badge { display: inline-block; font: 600 0.68rem/1 var(--f-body); letter-spacing: .07em; padding: 4px 7px; border-radius: 4px; margin-top: 6px; }
+.badge.ACTIVE { color: var(--ok); background: var(--ok-bg); }
+.badge.SUSPENDED { color: var(--warn); background: var(--warn-bg); }
+.badge.KILLED { color: var(--crit); background: var(--crit-bg); }
+.b-stats { display: flex; gap: 14px; margin-top: 8px; font-size: 0.78rem; color: var(--muted); flex-wrap: wrap; }
+.b-stats b { color: var(--ink); font: 500 0.9rem var(--f-mono); }
+.cool { font: 500 0.78rem var(--f-mono); color: var(--warn); margin-left: 6px; }
+
+/* logs */
+.logs { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+.logbox { padding: 14px 16px; min-width: 0; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+th { text-align: left; font: 600 0.68rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); white-space: nowrap; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: 0; }
+.out { font-family: var(--f-body); font-weight: 600; font-size: 0.74rem; }
+.out.allowed { color: var(--ok); } .out.blocked { color: var(--warn); } .out.error { color: var(--crit); }
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 0.86rem; }
+.timeline li:last-child { border-bottom: 0; }
+.timeline time { font: 0.78rem var(--f-mono); color: var(--muted); padding-top: 1px; }
+.tag { font: 600 0.66rem var(--f-body); letter-spacing: .06em; padding: 2px 5px; border-radius: 3px; margin-left: 4px; color: var(--muted); border: 1px solid var(--line); }
+
+/* results + faq */
+.results table td:first-child { font-family: var(--f-body); }
+details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+details:last-child { border-bottom: 0; }
+summary { cursor: pointer; font-weight: 600; }
+details p { margin: 8px 0 0; color: var(--muted); max-width: 70ch; }
+.faq { padding: 6px 18px; }
+footer { font-size: 0.82rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+@media (max-width: 900px) {
+  .hero, .logs { grid-template-columns: minmax(0, 1fr); }
+  .counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .counter:nth-child(2) { border-right: 0; }
+  .counter:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 520px) {
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .res-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { .lever { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <h1>llm-gateway</h1>
+      <span class="label">runaway-agent protection · live</span>
+    </div>
+    <div class="top-right">
+      <span class="chip" id="conn"><span class="dot" id="conn-dot"></span><span id="conn-text">connecting…</span></span>
+      <span class="chip" id="kill-chip" hidden><span class="dot crit"></span>global kill switch ON</span>
+      <button class="iconbtn" id="theme-btn" type="button" aria-label="Toggle light or dark theme">Theme</button>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="thesis-title">
+    <div class="thesis">
+      <h2 id="thesis-title">Every AI agent calls its LLM through this gateway. When one goes rogue, its breaker trips.</h2>
+      <p>The gateway knows each agent and its owner, enforces limits, and spots loops, retry storms and token bombs. A runaway agent is suspended in seconds, before the bill grows. Press the button to watch five buggy bots get caught, live, on the real AWS deployment.</p>
+      <div class="run-row">
+        <button class="run" id="run-btn" type="button">Run Live Demo</button>
+        <a class="skip" href="#scenarios">Skip to single scenarios</a>
+      </div>
+      <p class="lockmsg" id="lock-msg" hidden></p>
+    </div>
+
+    <div class="panel stage" aria-live="polite">
+      <div class="section-head" style="margin:0">
+        <span class="label" id="stage-label">Demo stage</span>
+        <span class="label mono" id="run-meta"></span>
+      </div>
+      <div class="steps" id="steps"></div>
+      <div class="stage-body" id="stage-body">
+        <p class="empty">No demo has run yet. Press <b>Run Live Demo</b>: each stage shows the problem, what the bot does, what the guard did, and the measured result.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scen" id="scenarios" aria-labelledby="scen-title">
+    <div class="section-head" style="margin:0">
+      <h2 id="scen-title">Try a specific scenario</h2>
+      <span class="muted" style="font-size:.85rem">Replays one case. Up to 6 single runs per hour across all visitors.</span>
+    </div>
+    <div class="scen-row" id="scen-row"></div>
+  </section>
+
+  <section class="panel counters" aria-label="Totals">
+    <div class="counter"><span class="label">Total requests</span><span class="num" id="c-total">–</span><small>through the gateway</small></div>
+    <div class="counter"><span class="label">Blocked calls</span><span class="num" id="c-blocked">–</span><small>never reached a provider</small></div>
+    <div class="counter"><span class="label">Est. cost avoided</span><span class="num" id="c-cost">–</span><small>at paid-tier list prices</small></div>
+    <div class="counter"><span class="label">Avg time to suspend</span><span class="num" id="c-tts">–</span><small id="c-tts-sub">from first bad call</small></div>
+  </section>
+
+  <section aria-labelledby="breaker-title">
+    <div class="section-head">
+      <h2 id="breaker-title">Agent breakers</h2>
+      <span class="muted" style="font-size:.85rem">Up: active · middle: tripped (cooldown) · down: killed</span>
+    </div>
+    <div class="breakers" id="breakers"><p class="empty">Loading agents…</p></div>
+  </section>
+
+  <section class="logs">
+    <div class="panel logbox">
+      <div class="section-head"><h2>Live request feed</h2><span class="label">last 20 · no prompt text</span></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Time</th><th>Agent</th><th>Result</th><th>Reason</th><th>Latency</th></tr></thead>
+          <tbody id="feed"><tr><td colspan="5" class="muted">Waiting for data…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel logbox">
+      <div class="section-head"><h2>Incident timeline</h2><span class="label">every state change</span></div>
+      <ul class="timeline" id="timeline"><li><time></time><span class="muted">No incidents yet.</span></li></ul>
+    </div>
+  </section>
+
+  <section class="panel logbox results" aria-labelledby="res-title">
+    <div class="section-head"><h2 id="res-title">Measured results</h2><span class="label">from simulator runs</span></div>
+    <div id="results"><p class="empty">Simulator results appear here once <span class="mono">reports/results.json</span> is published.</p></div>
+  </section>
+
+  <section class="panel faq" aria-labelledby="faq-title">
+    <div class="section-head" style="margin-top:12px"><h2 id="faq-title">Questions</h2></div>
+    <details>
+      <summary>What does the guard check?</summary>
+      <p>In order, cheapest first: the global kill switch, the agent's key, whether the agent is suspended or killed, prompt size (token bomb), requests per minute, the same prompt repeated more than 5 times in 2 minutes, 10 failed or blocked calls in 1 minute (retry storm), tokens per minute, and the daily token budget. Only then does the request go to a model, with automatic fallback to a second provider.</p>
+    </details>
+    <details>
+      <summary>Why does this cost $0?</summary>
+      <p>It runs only on AWS always-free services: Lambda with Function URLs instead of API Gateway, DynamoDB in provisioned mode within 25 read and 25 write units, SSM Parameter Store for secrets instead of Secrets Manager, and EventBridge Scheduler. The demo uses a mock model, and the real providers (Groq, Gemini) are on free tiers. Demo runs are rate-limited for every visitor together.</p>
+    </details>
+    <details>
+      <summary>What happens to a real agent that gets suspended?</summary>
+      <p>It is blocked for 15 minutes and its owner gets a Telegram alert with the rule that fired, the evidence, and the calls blocked. After the cooldown it works again on its next request. If it trips again within 24 hours it is killed and stays off until an admin resumes it. Demo agents use a 2-minute cooldown and never alert.</p>
+    </details>
+    <details>
+      <summary>What if a good agent gets blocked by mistake?</summary>
+      <p>An admin can resume it instantly from Telegram (/resume agent-id) or the admin API, which also clears its violation history. Limits are set per agent, so an agent that legitimately repeats a prompt or runs fast gets higher limits. The normal-agent stage of the demo measures false blocks on every run.</p>
+    </details>
+    <details>
+      <summary>What data does the demo use?</summary>
+      <p>Questions sampled from databricks-dolly-15k (CC BY-SA 3.0), human-written instructions. The demo sends them to a mock model, so no real model is called and no prompt text is ever shown here or stored in logs.</p>
+    </details>
+  </section>
+
+  <footer>
+    <span>Serverless on AWS: Lambda, DynamoDB, SSM, EventBridge Scheduler.</span>
+    <span id="built-at"></span>
+    <a id="repo-link" href="#" hidden>Source on GitHub</a>
+  </footer>
+</div>
+
+<script>
+const GATEWAY_URL = "https://mjabzxivlhfy5ky4jz2gm3sfbq0wnnsn.lambda-url.us-east-1.on.aws";
+const REPO_URL = "https://github.com/dheepakkaran/llm-gateway";
+
+const STAGES = [
+  { id: "normal", name: "Normal", bot: "good-bot",
+    problem: "Most agents are healthy. The guard must not get in their way.",
+    doing: "good-bot asks 5 different Dolly questions at a normal pace." },
+  { id: "loop", name: "Loop", bot: "loop-bot",
+    problem: "A bug traps the agent in a loop, so it asks the same question again and again.",
+    doing: "loop-bot repeats one question about 3 times a second." },
+  { id: "too_fast", name: "Too fast", bot: "speedy-bot",
+    problem: "An agent fires requests faster than it is allowed to.",
+    doing: "speedy-bot sends different questions above its 10-per-minute limit." },
+  { id: "token_bomb", name: "Token bomb", bot: "bomb-bot",
+    problem: "One giant prompt can cost as much as thousands of normal ones.",
+    doing: "bomb-bot sends a 50,000-character prompt (about 12,500 tokens)." },
+  { id: "retry_storm", name: "Retry storm", bot: "retry-bot",
+    problem: "The agent's provider is failing and it retries instantly, forever.",
+    doing: "retry-bot gets an error on every call and retries each task right away." },
+];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const hhmm = (t) => new Date(t * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+const hms = (t) => new Date(t * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+const fmt = (n) => (n == null ? "–" : Number(n).toLocaleString());
+
+let demo = null, demoTimer = null, statsTimer = null, stats = null, statsAt = 0, viewStage = null;
+
+// ---------- theme ----------
+(function () {
+  let saved = null;
+  try { saved = localStorage.getItem("llmgw-theme"); } catch (e) {}
+  if (saved) document.documentElement.dataset.theme = saved;
+  $("theme-btn").addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const next = cur === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("llmgw-theme", next); } catch (e) {}
+  });
+  if (REPO_URL) { $("repo-link").href = REPO_URL; $("repo-link").hidden = false; }
+})();
+
+// ---------- network ----------
+async function api(path, opts) {
+  const r = await fetch(GATEWAY_URL + path, opts);
+  const body = await r.json().catch(() => ({}));
+  return { status: r.status, body };
+}
+function setConn(ok, text) {
+  $("conn-dot").className = "dot " + (ok ? "ok" : "crit");
+  $("conn-text").textContent = text;
+}
+
+async function loadStats() {
+  try {
+    const { status, body } = await api("/stats");
+    if (status !== 200) throw new Error(status);
+    stats = body; statsAt = Date.now();
+    setConn(true, "live · updated " + hms(body.built_at));
+    renderStats();
+  } catch (e) { setConn(false, "gateway unreachable"); }
+}
+function scheduleStats() {
+  clearInterval(statsTimer);
+  statsTimer = setInterval(() => { if (!document.hidden) loadStats(); }, 20000);
+}
+
+async function loadDemo() {
+  try {
+    const { body } = await api("/demo/status");
+    demo = body;
+    renderDemo();
+    if (demo.is_running) startDemoPolling(); else stopDemoPolling();
+  } catch (e) { /* keep last state */ }
+}
+function startDemoPolling() {
+  if (demoTimer) return;
+  demoTimer = setInterval(() => { if (!document.hidden) loadDemo(); }, 2000);
+}
+function stopDemoPolling() {
+  if (!demoTimer) return;
+  clearInterval(demoTimer); demoTimer = null;
+  loadStats();
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) { loadStats(); loadDemo(); }
+});
+
+async function start(mode, scenario) {
+  disableButtons(true);
+  try {
+    const { status, body } = await api("/demo/start", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify(mode === "movie" ? { mode } : { mode, scenario }) });
+    demo = body;
+    viewStage = null;
+    if (status === 429) showLock(body);
+    else if (body.watching) showLock(null, "A demo is already running, so you're watching it live.");
+    else hideLock();
+    renderDemo();
+    if (body.is_running || body.started || body.watching) startDemoPolling();
+  } catch (e) {
+    showLock(null, "Could not reach the gateway. Try again in a moment.");
+  } finally { disableButtons(false); }
+}
+function disableButtons(on) {
+  $("run-btn").disabled = on;
+  document.querySelectorAll(".sbtn").forEach((b) => (b.disabled = on));
+}
+function showLock(state, msg) {
+  const el = $("lock-msg");
+  if (msg) el.textContent = msg;
+  else {
+    const n = state.next_allowed || {};
+    el.textContent = (state.reason ? state.reason + ". " : "") +
+      "Next full demo: " + hhmm(n.movie) + ". Next single scenario: " + hhmm(n.scenario) +
+      ". You can still watch the last run below.";
+  }
+  el.hidden = false;
+}
+function hideLock() { $("lock-msg").hidden = true; }
+
+$("run-btn").addEventListener("click", () => start("movie"));
+$("scen-row").innerHTML = STAGES.map((s) =>
+  `<button class="sbtn" type="button" data-s="${s.id}">${esc(s.name)}</button>`).join("");
+$("scen-row").addEventListener("click", (e) => {
+  const b = e.target.closest(".sbtn");
+  if (b) start("scenario", b.dataset.s);
+});
+
+// ---------- demo rendering ----------
+function stageClass(s, res, current) {
+  if (current === s.id) return "current";
+  const r = res[s.id];
+  if (!r || r.live) return "";
+  if (s.id === "normal") return r.false_blocks === 0 ? "clean" : "missed";
+  return r.caught ? "caught" : "missed";
+}
+function renderDemo() {
+  if (!demo) return;
+  const res = demo.results || {};
+  const inRun = new Set(demo.stages || []);
+  const current = demo.is_running ? demo.current_stage : null;
+  $("steps").innerHTML = STAGES.map((s, i) => {
+    const cls = stageClass(s, res, current);
+    const mark = cls === "caught" || cls === "clean" ? " ✓" : cls === "missed" ? " ✗" : "";
+    const dim = demo.stages && demo.stages.length && !inRun.has(s.id) ? ' style="opacity:.45"' : "";
+    return `<button type="button" class="step ${cls}" data-s="${s.id}"${dim}><b>${i + 1}</b>${esc(s.name)}${mark}</button>`;
+  }).join("");
+  const shown = viewStage || current || (demo.stages || []).slice(-1)[0];
+  const meta = demo.is_running ? "running · " + (demo.mode === "movie" ? "full demo" : "single scenario")
+    : demo.finished_at ? "last run " + hhmm(demo.finished_at) : "";
+  $("run-meta").textContent = meta;
+  $("run-btn").textContent = demo.is_running ? "Demo running…" : "Run Live Demo";
+  if (!shown) return;
+  const s = STAGES.find((x) => x.id === shown);
+  if (!s) return;
+  $("stage-label").textContent = "Stage " + (STAGES.indexOf(s) + 1) + " · " + s.name;
+  const r = res[s.id] || {};
+  const evs = (demo.events || []).filter((e) => e.agent === s.bot);
+  const live = !r.scenario;
+  const ticker = evs.length ? evs.slice(-8).map((e) =>
+    `<div>${hms(e.t)}  ${esc(e.agent)}  ${e.code}  ${esc(e.reason)}  ${e.ms}ms</div>`).join("")
+    : `<div class="muted">${live && current === s.id ? "starting…" : "no calls shown for this stage"}</div>`;
+  let guard = live ? (current === s.id ? "Watching…" : "Not run yet.") : esc(r.guard_did);
+  let result = "";
+  if (!live) {
+    const cells = s.id === "normal"
+      ? [["Calls sent", r.sent], ["Allowed", r.allowed], ["False blocks", r.false_blocks], ["Reached model", r.reached_provider]]
+      : s.id === "token_bomb"
+      ? [["Calls sent", r.sent], ["Rejected on call", r.first_block_call], ["Reached model", r.reached_provider], ["Final status", r.final_status]]
+      : s.id === "too_fast"
+      ? [["Throttled at call", r.throttled_at_call], ["Suspended at call", r.calls_to_catch], ["Seconds to catch", r.seconds_to_catch], ["Reached model", r.reached_provider]]
+      : [["Calls to catch", r.calls_to_catch], ["Seconds to catch", r.seconds_to_catch], ["Reached model", r.reached_provider], ["Final status", r.final_status]];
+    result = `<div class="res-grid">${cells.map(([k, v]) =>
+      `<div><span class="num${typeof v === "string" ? " word" : ""}">${esc(v ?? "–")}</span><span class="k">${esc(k)}</span></div>`).join("")}</div>`;
+  }
+  let summary = "";
+  if (demo.summary && !demo.is_running && demo.mode === "movie") {
+    const m = demo.summary;
+    summary = `<div class="summary"><h3>Problems caught ${m.caught}/${m.problems}</h3>
+      <span>False blocks for good-bot: <b class="num">${fmt(m.false_blocks)}</b> · Average catch time: <b class="num">${m.avg_seconds_to_catch ?? "–"}s</b> · Requests used: <b class="num">${fmt(m.requests)}</b></span>
+      <span class="muted" style="font-size:.8rem">Every number measured in this run (${hhmm(demo.started_at)}).</span></div>`;
+  }
+  $("stage-body").innerHTML = `
+    <div class="row"><span class="label">Problem</span><p>${esc(s.problem)}</p></div>
+    <div class="row"><span class="label">The bot</span><div style="min-width:0"><p>${esc(s.doing)}</p><div class="ticker">${ticker}</div></div></div>
+    <div class="row"><span class="label">The guard</span><p>${guard}</p></div>
+    ${result ? `<div class="row"><span class="label">Result</span>${result}</div>` : ""}
+    ${summary}`;
+  const t = $("stage-body").querySelector(".ticker");
+  if (t) t.scrollTop = t.scrollHeight;
+}
+$("steps").addEventListener("click", (e) => {
+  const b = e.target.closest(".step");
+  if (!b || (demo && demo.is_running)) return;
+  viewStage = b.dataset.s; renderDemo();
+});
+
+// ---------- stats rendering ----------
+function renderStats() {
+  const c = stats.counters || {};
+  $("c-total").textContent = fmt(c.total_requests);
+  $("c-blocked").textContent = fmt(c.blocked_calls);
+  $("c-cost").textContent = c.est_cost_avoided == null ? "–" : "$" + Number(c.est_cost_avoided).toFixed(4);
+  $("c-tts").textContent = c.avg_time_to_suspend_s == null ? "–" : c.avg_time_to_suspend_s + " s";
+  $("c-tts-sub").textContent = c.suspensions_counted
+    ? `avg over last ${c.suspensions_counted} suspensions · ${c.avg_calls_to_suspend} calls` : "from first bad call";
+  $("built-at").textContent = "Snapshot " + hms(stats.built_at);
+  $("kill-chip").hidden = !stats.kill_all;
+  renderBreakers();
+  const feed = stats.requests || [];
+  $("feed").innerHTML = feed.length ? feed.map((r) => `<tr>
+      <td>${hms(r.ts)}</td><td>${esc(r.agent)}</td>
+      <td><span class="out ${esc(r.outcome)}">${esc(r.outcome)}${r.count > 1 ? " ×" + r.count : ""}</span></td>
+      <td>${esc(r.reason)}</td><td>${r.latency_ms ? r.latency_ms + " ms" : "–"}</td></tr>`).join("")
+    : `<tr><td colspan="5" class="muted">No requests yet.</td></tr>`;
+  const inc = stats.incidents || [];
+  $("timeline").innerHTML = inc.length ? inc.map((i) =>
+    `<li><time>${hhmm(i.ts)}</time><span>${esc(i.line)}${i.demo ? '<span class="tag">DEMO</span>' : ""}</span></li>`).join("")
+    : `<li><time></time><span class="muted">No incidents yet.</span></li>`;
+}
+function renderBreakers() {
+  const agents = (stats && stats.agents) || [];
+  const elapsed = Math.floor((Date.now() - statsAt) / 1000);
+  $("breakers").innerHTML = agents.length ? agents.map((a) => {
+    const left = Math.max(0, (a.cooldown_left_s || 0) - elapsed);
+    const status = a.status === "SUSPENDED" && left === 0 ? "ACTIVE" : a.status;
+    const cool = status === "SUSPENDED" ? `<span class="cool">${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}</span>` : "";
+    return `<article class="panel breaker" data-s="${esc(status)}">
+      <div class="switch" aria-hidden="true"><div class="lever"></div></div>
+      <div style="min-width:0">
+        <div class="b-name">${esc(a.id)}</div>
+        <div class="b-owner">owner ${esc(a.owner || "–")}${a.demo ? " · demo" : ""}</div>
+        <span class="badge ${esc(status)}">${esc(status)}</span>${cool}
+        <div class="b-stats"><span><b>${fmt(a.hour_calls)}</b> calls this hour</span><span><b>${fmt(a.hour_blocked)}</b> blocked</span></div>
+      </div></article>`;
+  }).join("") : `<p class="empty">No agents registered yet.</p>`;
+}
+setInterval(() => { if (stats && !document.hidden) renderBreakers(); }, 1000);
+
+// ---------- simulator results (static file next to this page) ----------
+fetch("results.json").then((r) => (r.ok ? r.json() : null)).then((d) => {
+  if (!d || !d.scenarios) return;
+  const rows = d.scenarios.map((s) => `<tr><td>${esc(s.scenario)}</td><td>${fmt(s.sent)}</td>
+    <td>${s.calls_to_catch ?? "–"}</td><td>${s.seconds_to_catch ?? "–"}</td><td>${fmt(s.reached_provider)}</td>
+    <td>${esc(s.note || "")}</td></tr>`).join("");
+  $("results").innerHTML = `<div class="tablewrap"><table><thead><tr><th>Scenario</th><th>Calls sent</th>
+    <th>Calls to catch</th><th>Seconds to catch</th><th>Reached model</th><th>Note</th></tr></thead>
+    <tbody>${rows}</tbody></table></div><p class="muted" style="font-size:.8rem">Measured ${esc(d.measured_at || "")} against the deployed gateway.</p>`;
+}).catch(() => {});
+
+loadStats(); loadDemo(); scheduleStats();
+</script>
+</body>
+</html>
