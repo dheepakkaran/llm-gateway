@@ -90,7 +90,7 @@ button { font: inherit; cursor: pointer; }
 .row .label { padding-top: 3px; }
 .row p { margin: 0; }
 .ticker { font: 0.78rem/1.6 var(--f-mono); background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
-  padding: 8px 10px; min-height: 7.3em; max-height: 9.8em; overflow: auto; }
+  padding: 8px 10px; height: calc(6 * 1.6em + 18px); overflow: hidden; }  /* exactly 6 rows, never a half-cut line */
 .ticker div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .res-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .res-grid div { border-left: 2px solid var(--line); padding-left: 8px; min-width: 0; }
@@ -451,7 +451,7 @@ function renderDemo() {
   const r = res[s.id] || {};
   const evs = (demo.events || []).filter((e) => e.agent === s.bot);
   const live = !r.scenario;
-  const ticker = evs.length ? evs.slice(-8).map((e) =>
+  const ticker = evs.length ? evs.slice(-6).map((e) =>
     `<div>${hms(e.t)}  ${esc(e.agent)}  ${e.code}  ${esc(e.reason)}  ${e.ms}ms</div>`).join("")
     : `<div class="muted">${live && current === s.id ? "starting…" : "no calls shown for this stage"}</div>`;
   let guard = live ? (current === s.id ? "Watching…" : "Not run yet.") : esc(r.guard_did);
@@ -480,8 +480,6 @@ function renderDemo() {
     <div class="row"><span class="label">The guard</span><p>${guard}</p></div>
     ${result ? `<div class="row"><span class="label">Result</span>${result}</div>` : ""}
     ${summary}`;
-  const t = $("stage-body").querySelector(".ticker");
-  if (t) t.scrollTop = t.scrollHeight;
 }
 $("steps").addEventListener("click", (e) => {
   const b = e.target.closest(".step");
