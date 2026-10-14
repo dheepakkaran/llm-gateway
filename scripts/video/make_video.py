@@ -515,15 +515,17 @@ def plan():
     return {"scenes": scenes, "cues": cues, "scale": scale, "dur": dur, "vo": vo, "caps": caps}
 
 
+import card_scenes as cs  # noqa: E402
+
+
 def render_scene(name, L, P):
-    cue, s = P["cues"].get(name, {}), P["scale"].get(name, 1.0)
-    return {
-        "title": lambda: scene_title(L), "problem": lambda: scene_problem(L, cue), "idea": lambda: scene_idea(L, cue),
-        "tour": lambda: scene_tour(L / s), "click": lambda: scene_click(L / s), "demo": lambda: scene_demo(L),
-        "cloudwatch": lambda: scene_cloudwatch(L / s), "telegram": lambda: scene_telegram(L),
-        "repo": lambda: scene_repo(L / s), "results": lambda: scene_results(L),
-        "end": lambda: scene_end(L, P["dur"]["end"]),
-    }[name]()
+    cue, s, dur = P["cues"].get(name, {}), P["scale"].get(name, 1.0), P["dur"].get(name, 1.0)
+    cards = {"title": cs.title, "problem": cs.problem, "idea": cs.idea, "telegram": cs.telegram,
+             "results": cs.results, "end": cs.end}
+    if name in cards:
+        return cards[name](L, cue, D, dur)
+    return {"tour": lambda: scene_tour(L / s), "click": lambda: scene_click(L / s), "demo": lambda: scene_demo(L),
+            "cloudwatch": lambda: scene_cloudwatch(L / s), "repo": lambda: scene_repo(L / s)}[name]()
 
 
 def frame_at(t, P):
@@ -535,7 +537,7 @@ def frame_at(t, P):
     for a, b, lab, text, name in P["caps"]:
         if a - 0.3 <= t <= b + 0.3:
             al = appear(t, a, 0.25, b, 0.25)
-            c = ovl(name)
+            c = cs.layer(name)
             place(img, c, center_x(c), OH - 64 - c.height + 14 * (1 - al), al)
     return img.convert("RGB")
 
