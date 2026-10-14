@@ -68,7 +68,9 @@ def _err(status, code, message, agent_status=None, retry_after=0, extra=None):
 
 
 def _log(**kv):
-    log.info(json.dumps(kv, separators=(",", ":")))   # never prompt text or keys
+    # "BLOCKED {...}" / "STATE_CHANGE {...}": the leading word feeds the two
+    # CloudWatch metric filters. Never prompt text or keys.
+    log.info("%s %s", str(kv.get("event", "")).upper(), json.dumps(kv, separators=(",", ":")))
 
 
 def kill_all_on():
