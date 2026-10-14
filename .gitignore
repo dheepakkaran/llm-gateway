@@ -10,4 +10,4 @@ __pycache__/
 *.pyc
 .DS_Store
 .terraform.lock.hcl.bak
-media/
+*.tfplan

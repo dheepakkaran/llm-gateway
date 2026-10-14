@@ -2,11 +2,11 @@
 
 A serverless LLM gateway on AWS that catches runaway AI agents: loops, retry storms, token spikes and token bombs. It suspends the agent within seconds, alerts its owner on Telegram, and gives you kill switches. It runs entirely on the AWS always-free tier.
 
-**Live dashboard:** https://dheepakkaran.github.io/llm-gateway/ · **Learning guide:** [docs/LEARNING_GUIDE.md](docs/LEARNING_GUIDE.md) (every design decision explained from zero, plus interview Q&A)
+**Live dashboard:** https://dheepakkaran.github.io/llm-gateway/
 
 ![Demo movie: five buggy bots get caught live on the deployed gateway](docs/demo.gif)
 
-_Recorded live from the public dashboard (2x capture, 1200 px): 4/4 problems caught, 0 false blocks, average catch time 2.41 s, 41 requests. Re-record with `scripts/record_demo.py`._
+_Recorded live from the public dashboard (2x capture, 1200 px): 4/4 problems caught, 0 false blocks, average catch time 2.41 s, 41 requests._
 
 ## The problem
 
@@ -148,19 +148,36 @@ Planned for the next milestone (M3b), on [MAST-Data](https://huggingface.co/data
 
 ## Setup
 
-You need git, Python 3.12, AWS CLI v2 and Terraform. `scripts/install_tools_nosudo.sh` installs them without admin rights.
+You need git, Python 3.12, AWS CLI v2 and Terraform.
 
-1. **AWS account:** enable MFA on root and create a **$1 AWS Budget** first. Then create an IAM user with console access, MFA and AdministratorAccess, and log in the CLI with short-lived credentials:
+1. **AWS account:** enable MFA on root and create a **$1 AWS Budget** first. Use an IAM user or SSO with short-lived CLI credentials, region `us-east-1`.
+2. **Secrets** live in SSM Parameter Store as Standard SecureStrings (AWS-managed key, no extra cost). Each value is typed at a hidden prompt, so it never lands in your shell history. Groq and Gemini are optional, because the `mock` model needs no keys.
    ```bash
-   aws configure set region us-east-1 --profile llm-gateway
-   aws login --profile llm-gateway
+   P=/llm-gateway
+   for name in groq_api_key gemini_api_key telegram_bot_token telegram_chat_id; do
+     printf "%s: " "$name"; read -rs v; echo
+     aws ssm put-parameter --name "$P/$name" --type SecureString --tier Standard --value "$v" --overwrite
+   done
+   for name in telegram_webhook_secret demo_key_secret; do
+     aws ssm put-parameter --name "$P/$name" --type SecureString --tier Standard --value "$(openssl rand -hex 32)" --overwrite
+   done
+   mkdir -p ~/.llm-gateway && ADMIN_KEY="adm_$(openssl rand -hex 24)" && (umask 077; printf %s "$ADMIN_KEY" > ~/.llm-gateway/admin_key)
+   aws ssm put-parameter --name "$P/admin_key_hash" --type SecureString --tier Standard --overwrite \
+     --value "$(printf %s "$ADMIN_KEY" | shasum -a 256 | cut -d' ' -f1)"
    ```
-2. **Secrets** (you type them; nothing is printed or committed): `bash scripts/put_secrets.sh` stores the Groq/Gemini keys, Telegram token, chat ID, webhook secret, demo secret and the admin-key hash as SSM SecureStrings. The admin key itself goes to `~/.llm-gateway/admin_key`.
-3. **Deploy:** `./scripts/tf.sh plan -out=build/plan` then `./scripts/tf.sh apply build/plan`
+   The admin key stays in `~/.llm-gateway/admin_key`; AWS only gets its SHA-256 hash.
+3. **Deploy** (Terraform state stays local):
+   ```bash
+   cd infra
+   terraform init
+   terraform plan -out=plan.tfplan
+   terraform apply plan.tfplan
+   ```
+   With `aws login`, first export its short-lived credentials for Terraform: `eval "$(aws configure export-credentials --format env)"`. To limit dashboard CORS to your Pages site: `echo 'allowed_origin = "https://<you>.github.io"' > terraform.tfvars`.
 4. **Telegram webhook** (registered from inside AWS):
    ```bash
    aws lambda invoke --function-name llmgw-bot --cli-binary-format raw-in-base64-out \
-     --payload "{\"type\":\"register_webhook\",\"url\":\"$(cd infra && terraform output -raw bot_webhook_url)\"}" /dev/stdout
+     --payload "{\"type\":\"register_webhook\",\"url\":\"$(terraform output -raw bot_webhook_url)\"}" /dev/stdout
    ```
 5. **Dashboard:** set `GATEWAY_URL` in `dashboard/index.html`, push, and enable GitHub Pages with "GitHub Actions" as the source.
 6. **Tests:** `python -m pytest -q` (pure logic, no AWS, no real providers).
@@ -192,7 +209,7 @@ Admin routes (Bearer admin key): `POST /admin/agents`, `GET /admin/agents`, `POS
 ## Teardown
 
 ```bash
-./scripts/tf.sh destroy
+cd infra && terraform destroy
 ```
 
 This removes every AWS resource Terraform created. The SSM secrets you created by hand stay until you delete them (`aws ssm delete-parameters --names ...`).
